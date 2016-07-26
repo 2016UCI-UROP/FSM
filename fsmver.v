@@ -19,7 +19,9 @@ module FSM(reset, clk, i1, i2, i4, i3, out);
 			$display("this is s1 state");
 			out <= s1;
 			if(i3 == 1) nextState <= s2;
-			else nextState <= s1;
+			else begin
+				nextState <= s1;
+			end
 		end
 		s2 : begin
 			$display("this is s2 state");
