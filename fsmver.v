@@ -1,20 +1,19 @@
-module FSM(reset, clk, i1, i2, i4, i3, t, out);
-	input reset, clk, i1, i2, i4, i3, t;
+module FSM(reset, clk, i1, i2, i4, i3, out);
+	input reset, clk, i1, i2, i4, i3;
 	output reg[16:0] out;
 	parameter s1 = 0, s2 = 200, s3 = 700, s4 = 900, s5 = 1300, s6 = 1800, s7 = 2300, s8 = 2800, s9 = 3100, s10 = 3400, s11 = 3600, s12 = 3800, s13 = 4100;
 	reg[16:0] state, nextState;
 
-	always @(posedge clk) begin
+	always @(*) begin
 		if(reset) begin
 			state <= s1;
-			//i1 <= 0; i2 <= 0; i3 <= 0; i4 <= 0;
 		end
 		else begin
 			state <= nextState;
 		end
 	end
 
-	always @(i1, i2, i4, i3, t) begin
+	always @(i1, i2, i4, i3, clk) begin
 		case(state)
 		s1 : begin
 			$display("this is s1 state");
@@ -95,12 +94,12 @@ module Testbench;
 	reg i1, i2, i3, i4, t;
 	wire[16:0] out;
 
-	FSM f(RST, CLK, i1, i2, i4, i3, t, out);
+	FSM f(RST, CLK, i1, i2, i4, i3, out);
 	always begin
 		CLK <= 0;
-		#5;
+		#50;
 		CLK <= 1;
-		#5;
+		#50;
 	end
 
 	initial begin
@@ -109,53 +108,43 @@ module Testbench;
 		i2 <= 0;
 		i3 <= 0;
 		i4 <= 0;
-		t <= 0;
-		
 $display("phrase1");
 		#50;
 		RST <= 0;
 		i3 <= 1;
-		t <= ~t;
 		//state2
 $display("phrase2");
 		#50;
 		i1 <= 1;
 		i4 <= 1;
-		t <= ~t;
+		//t <= ~t;
 		//state3
 $display("phrase3");
 		#50
 		i2 <= 1;
-		t <= ~t;
 		//state1
 $display("phrase4");
 		#50
 		i3 <= 1;
-		t <= ~t;
 		//state2
 $display("phrase5");
 		#50;
 		i1 <= 1;
 		i4 <= 1;
-		//i2 <= 0;	//point
-		t <= ~t;
 		//state3
 $display("phrase6");
 		#50
 		i3 <= 0;
-		t <= ~t;
 		//state4
 $display("phrase7");
 		#50
 		i1 <= 0;
 		i3 <= 1;
-		t <= ~t;
 $display("phrase8");
 		#50
 		i1 <= 0;
 		i2 <= 1;
 		i4 <= 0;
-		t <= ~t;
 	end
 endmodule
 	
