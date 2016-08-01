@@ -62,7 +62,10 @@ class FSM:
                     string = string[:-4]
                     string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
                 """ 
-                string += "\t\t\telse nextState <= s1;\n"
+                if self.li_states[i + 1].b_isLoop == 0:
+                    string += "\t\t\telse nextState <= s1;\n"
+                else:
+                    string += "\t\t\telse nextState <=" + self.li_states[i].s_name + ";\n"
                 string += '\t\t' + 'end\n'
                 output.write(string)
             curState.printState()
@@ -103,14 +106,19 @@ class State:
     s_name = ""
     i_value = 0
     li_transitions = []
+    b_isLoop = 0
 
     def __init__(self, n, t):
         self.s_name = n
         self.i_value = t
         self.li_transitions = []
+        self.b_isLoop = 0
 
     def setTransition(self, valDic, d):
         self.li_transitions.append(Transition(valDic, d))
+
+    def setIsLoop(self):
+        self.b_isLoop = 1
 
     def printState(self):
         print("STATE : " + self.s_name + "\t\tOccurrence time : " + self.i_value + "ps")
@@ -146,6 +154,7 @@ class Transition:
 def setFSM(lines, fsm):
     idx = 1
     stat = 0
+    loopStat = 0
     beforeStat = 0
     isVarSetting = 0
     tempdic = {}
@@ -179,9 +188,13 @@ def setFSM(lines, fsm):
                 isVarSetting = 1
         elif isVarSetting == 1:
             # go to the next line and set the transitions information
+            if line == "...\n":
+                stat.setIsLoop()
+                continue
             value = line[0]
             var = fsm.getInputVal(line[1])
             tempdic[var] = value
+
     beforeStat.setTransition(tempdic, "s" + str(idx - 1))
     fsm.setState(beforeStat)
 
