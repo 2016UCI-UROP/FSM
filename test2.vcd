@@ -8,7 +8,7 @@ $timescale
 	1ps
 $end
 
-$scope module tb_and_test $end
+$scope module FSM $end
 $var parameter 32 ! test $end
 $var reg 1 " i1 $end
 $var reg 1 # i2 $end

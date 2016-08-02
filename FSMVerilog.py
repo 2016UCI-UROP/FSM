@@ -8,14 +8,15 @@ class FSM:
 
     # print the header part of verilog file
     def printHeader(self, output):
-        output.write("module " + self.s_moduleName + "(reset, clk, " + self.makeInputVarString() + ");\n")
+        output.write("module " + self.s_moduleName + "(reset, clk, " + self.makeInputVarString() + ", out);\n")
         output.write("\tinput reset, clk, " + self.makeInputVarString() + ";\n")
+        output.write("\toutput reg[16:0] out;\n")
         output.write("\tparameter " + self.makeStateString() + ";\n")
         output.write("\treg[16:0] state, nextState;\n\n") # change 1 bit into 16 bits
 
     # print the initialize part of verilog file
     def printInitialize(self, output):
-        string = '\t' + 'always @(posedge clk) begin\n'
+        string = '\t' + 'always @(*) begin\n'
         string += '\t\t' + 'if(reset) begin\n'
         string += '\t\t\t' + 'state <= ' + self.li_states[0].s_name + ';\n'
         """
@@ -31,7 +32,7 @@ class FSM:
 
     # print the state changes & transition part of verilog file
     def printTransition(self, output):
-        output.write('\t' + 'always @(' + self.makeInputVarString() + ') begin\n\t\t' + 'case(state)\n')
+        output.write('\t' + 'always @(' + self.makeInputVarString() + ', clk) begin\n\t\t' + 'case(state)\n')
         for i in range(0, len(self.li_states)):
             curState = self.li_states[i]
             if i == len(self.li_states) - 1:
@@ -40,8 +41,8 @@ class FSM:
 
             else:
                 string = '\t\t' + curState.s_name + ' : begin\n'
+                string += "\t\t\tout <= " + curState.s_name + ';\n'
                 string += '\t\t\tif('
-
                 # if phrase
                 for trans in curState.li_transitions:
                     for key in trans.dic_tranValue.keys():
@@ -65,7 +66,7 @@ class FSM:
                 if self.li_states[i + 1].b_isLoop == 0:
                     string += "\t\t\telse nextState <= s1;\n"
                 else:
-                    string += "\t\t\telse nextState <=" + self.li_states[i].s_name + ";\n"
+                    string += "\t\t\telse nextState <=" + curState.s_name + ";\n"
                 string += '\t\t' + 'end\n'
                 output.write(string)
             curState.printState()
