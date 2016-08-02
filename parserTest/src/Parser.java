@@ -45,7 +45,8 @@ public class Parser {
         lp = LexicalizedParser.loadModel(parserModel);
 
         Tree parse = lp.apply(words);
-        System.out.println(parse);
+        parse.pennPrint();
+//        System.out.println(parse);
         System.out.println();
         System.out.println();
 
@@ -54,13 +55,12 @@ public class Parser {
         GrammaticalStructure gs = gsf.newGrammaticalStructure(parse);
         List<TypedDependency> tdl = gs.typedDependenciesCCprocessed();
 
-
         System.out.println(tdl);
         System.out.println();
         System.out.println();
 
         for(TypedDependency td : tdl){
-            if(td.reln().toString().contains("nsubj") || td.reln().toString().equals("dobj") || td.reln().toString().equals("nsubjpass")){
+            if(td.reln().toString().contains("nsubj") || td.reln().toString().equals("dobj") || td.reln().toString().equals("nummod")){
                 System.out.println(td);
             }
         }
