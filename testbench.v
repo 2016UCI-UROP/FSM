@@ -3,6 +3,7 @@ module FSM(reset, clk, i3, i4, i1, i2, out);
 	output reg[16:0] out;
 	parameter s1 = 0, s2 = 200, s3 = 700, s4 = 900, s5 = 1300, s6 = 1800, s7 = 2300, s8 = 2800, s9 = 3100, s10 = 3400, s11 = 3600, s12 = 3800, s13 = 4100;
 	reg[16:0] state, nextState;
+	reg[128:0] label;
 
 	always @(*) begin
 		if(reset) begin
@@ -17,11 +18,13 @@ module FSM(reset, clk, i3, i4, i1, i2, out);
 		case(state)
 		s1 : begin
 			out <= s1;
+			label <= 1'bx;
 			if(i3 == 1) nextState <= s2;
 			else nextState <= s1;
 		end
 		s2 : begin
 			out <= s2;
+			label <= "start";
 			if(i1 == 1 && i4 == 1) nextState <= s3;
 			else nextState <= s1;
 		end
@@ -32,6 +35,7 @@ module FSM(reset, clk, i3, i4, i1, i2, out);
 		end
 		s4 : begin
 			out <= s4;
+			label <= 1'bx;
 			if(i1 == 0 && i3 == 1) nextState <= s5;
 			else nextState <= s1;
 		end
@@ -142,8 +146,8 @@ $display("phrase8");
 		#50
 		i2 <= 0;
 		#50
-		i1 <= 1;
-		#5
+		i1 <= 1; 
+		#50
 		RST <= 1;
 	end
 endmodule
