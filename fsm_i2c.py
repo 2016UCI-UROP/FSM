@@ -20,12 +20,7 @@ class FSM:
         string = '\t' + 'always @(*) begin\n'
         string += '\t\t' + 'if(reset) begin\n'
         string += '\t\t\t' + 'state <= ' + self.li_states[0].s_name + ';\n'
-        """
-        string += '\t\t\t'
-        for v in self.dic_inputVal.values():
-            string = string + v + ' = 0, '
-        string = string[:-2]
-        """
+        
         string += '\t\t' + 'end\n\t\t' + 'else begin\n'
         string += '\t\t\t' + 'state <= nextState;\n\t\t' + 'end\n\t'
         string += 'end\n\n'
