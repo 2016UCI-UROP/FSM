@@ -10,9 +10,9 @@ class FSM:
     def printHeader(self, output):
         output.write("module " + self.s_moduleName + "(reset, clk, " + self.makeInputVarString() + ", out);\n")
         output.write("\tinput reset, clk, " + self.makeInputVarString() + ";\n")
-        output.write("\toutput reg[16:0] out;\n")
+        output.write("\toutput reg[64:0] out;\n")
         output.write("\tparameter " + self.makeStateString() + ";\n")
-        output.write("\treg[16:0] state, nextState;\n")  # change 1 bit into 16 bits
+        output.write("\treg[64:0] state, nextState;\n")  # change 1 bit into 16 bits
         output.write("\treg[128:0] label;\n\n")  # to label repeated states
 
     # print the initialize part of verilog file
@@ -20,12 +20,6 @@ class FSM:
         string = '\t' + 'always @(*) begin\n'
         string += '\t\t' + 'if(reset) begin\n'
         string += '\t\t\t' + 'state <= ' + self.li_states[0].s_name + ';\n'
-        """
-        string += '\t\t\t'
-        for v in self.dic_inputVal.values():
-            string = string + v + ' = 0, '
-        string = string[:-2]
-        """
         string += '\t\t' + 'end\n\t\t' + 'else begin\n'
         string += '\t\t\t' + 'state <= nextState;\n\t\t' + 'end\n\t'
         string += 'end\n\n'
@@ -62,25 +56,13 @@ class FSM:
                 string = string[:-4]
 
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
-
-                """ # for comments
-                # else if phrase
-                if i is not 0:
-                    prior = self.li_states[i - 1]
-                    string += '\t\t\telse if('
-                    for trans in prior.li_transitions:
-                        for key in trans.dic_tranValue.keys():
-                            string += key + ' == ' + trans.dic_tranValue[key] + ' && '
-                    string = string[:-4]
-                    string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
-                """
                 if self.li_states[i + 1].b_isLoop == 0:
                     string += "\t\t\telse nextState <= s1;\n"
                 else:
                     string += "\t\t\telse nextState <=" + curState.s_name + ";\n"
                 string += '\t\t' + 'end\n'
                 output.write(string)
-            curState.printState()
+            #curState.printState()
 
         output.write('\t\t' + 'endcase\n\t' + 'end\n' + 'endmodule')
 
@@ -95,8 +77,10 @@ class FSM:
     # make the state string (e.g. s1 = 0, s2 = 10, s3 = 30)
     def makeStateString(self):
         s = ""
+        idx = 1
         for state in self.li_states:
-            s += (state.s_name + " = " + state.i_value + ", ")
+            s += (state.s_name + " = \"s" + str(idx) + "\", ")
+            idx += 1
         s = s[:-2]
         return s
 
@@ -228,7 +212,7 @@ def setFSM(lines, fsm):
 
 
 if __name__ == "__main__":
-    rf = open("test2.vcd", "r")
+    rf = open("i2c_vcd.vcd", "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
