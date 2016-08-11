@@ -56,6 +56,16 @@ class FSM:
                 string = string[:-4]
 
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
+                if i > 0:
+                    string += '\t\t\telse if('
+                    # else-if phrase
+                    for trans in self.li_states[i-1].li_transitions:
+                        for key in trans.dic_tranValue.keys():
+                            string += key + ' == ' + trans.dic_tranValue[key] + ' && '
+                    string = string[:-4]
+
+                    string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
+
                 if self.li_states[i + 1].b_isLoop == 0:
                     string += "\t\t\telse nextState <= s1;\n"
                 else:
