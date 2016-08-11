@@ -79,7 +79,7 @@ class FSM:
         s = ""
         idx = 1
         for state in self.li_states:
-            s += (state.s_name + " = \"s" + str(idx) + "\", ")
+            s += (state.s_name + " = \"" + state.s_name + "\", ")
             idx += 1
         s = s[:-2]
         return s
@@ -100,14 +100,12 @@ class FSM:
 
 class State:
     s_name = ""
-    i_value = 0
     li_transitions = []
     b_isLoop = 0
     s_labeled = -1  # default value to detect whether current state is start or stop
 
-    def __init__(self, n, t):
+    def __init__(self, n):
         self.s_name = n
-        self.i_value = t
         self.li_transitions = []
         self.b_isLoop = 0
 
@@ -123,16 +121,6 @@ class State:
     def setStopLabeled(self):
         self.s_labeled = 0
 
-    def printState(self):
-        print("STATE : " + self.s_name + "\t\tOccurrence time : " + self.i_value + "ps")
-        for t in self.li_transitions:
-            t.printTransitionInfo()
-        if len(self.li_transitions) == 0:
-            print("\tThis is the end state\n")
-        else:
-            print("\telse if neither variables change")
-            print("\t\t--> Next State is " + self.s_name)
-            print("\telse Next state is s1\n")
 
 
 class Transition:
@@ -155,14 +143,12 @@ class Transition:
 
 # set FSM class
 def setFSM(lines, fsm):
-    idx = 1
     stat = 0
-    loopStat = 0
-    beforeStat = 0
-    isVarSetting = 0
+    idx = 1
     tempdic = {}
 
     for line in lines:
+        #print(line)
         if line[0] == '$':
             line = line[1:]
             words = line.split()
@@ -173,41 +159,24 @@ def setFSM(lines, fsm):
             elif words[0] == 'var' and words[1] == 'reg':
                 print(words[4], "is assigned to", words[3])
                 fsm.setInputValue(words[3], words[4])
-            else:
-                """nothing"""
-        # set first state(s1) information
-        elif line[0] == '#':
-            if isVarSetting == 1:
-                beforeStat.setTransition(tempdic, "s" + str(idx - 1))
-                fsm.setState(beforeStat)
-                isVarSetting = 0
-            tempdic = {}
-            time = line[1:-1]
-            beforeStat = stat
-            stat = State("s" + str(idx), time)
-
-            idx += 1
-            if time != "0":
-                isVarSetting = 1
-
-        elif line == "...\n":
-            stat.setIsLoop()
             continue
-        elif line == 'START\n':
-            stat.setStartLabeled()
-        elif line == 'STOP\n':
-            stat.setStopLabeled()
 
-        elif isVarSetting == 1:
-            # go to the next line and set the transitions information
-            value = line[0]
-            var = fsm.getInputVal(line[1])
-            tempdic[var] = value
+        if line[0] == '#' and line[1] != '0':
+            stat.setTransition(tempdic, "s" + str(idx + 1))
+            if idx != 1:
+                fsm.setState(stat)
+            idx += 1
+            tempdic = {}
+            stat = State("s" + str(idx))
+            continue
 
-    beforeStat.setTransition(tempdic, "s" + str(idx - 1))
-    fsm.setState(beforeStat)
+        elif line[0] == "#" and line[1] == '0':
+            stat = State("s" + str(idx))
+            continue
 
-    fsm.setState(stat)
+        val = line[0]
+        var = fsm.getInputVal(line[1])
+        tempdic[var] = val
     return fsm
 
 
