@@ -144,7 +144,7 @@ class Transition:
 # set FSM class
 def setFSM(lines, fsm):
     stat = 0
-    idx = 1
+    idx = 0
     tempdic = {}
 
     for line in lines:
@@ -162,11 +162,12 @@ def setFSM(lines, fsm):
             continue
 
         if line[0] == '#' and line[1] != '0':
-            stat.setTransition(tempdic, "s" + str(idx + 1))
-            fsm.setState(stat)
-            idx += 1
+            if idx > 1:
+                stat.setTransition(tempdic, "s" + str(idx + 1))
+                fsm.setState(stat)
             tempdic = {}
             stat = State("s" + str(idx))
+            idx += 1
             continue
 
         elif line[0] == "#" and line[1] == '0':

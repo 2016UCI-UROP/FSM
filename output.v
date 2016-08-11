@@ -1,7 +1,7 @@
-module i2c_raw(reset, clk, sda, scl, out);
-	input reset, clk, sda, scl;
+module i2c_raw(reset, clk, scl, sda, out);
+	input reset, clk, scl, sda;
 	output reg[64:0] out;
-	parameter s1 = "s1", s2 = "s2", s3 = "s3", s4 = "s4", s5 = "s5", s6 = "s6", s7 = "s7", s8 = "s8", s9 = "s9", s10 = "s10", s11 = "s11", s12 = "s12", s13 = "s13", s14 = "s14", s15 = "s15", s16 = "s16", s17 = "s17", s18 = "s18", s19 = "s19", s20 = "s20", s21 = "s21", s22 = "s22", s23 = "s23", s24 = "s24", s25 = "s25", s26 = "s26", s27 = "s27", s28 = "s28", s29 = "s29", s30 = "s30", s31 = "s31", s32 = "s32", s33 = "s33", s34 = "s34", s35 = "s35", s36 = "s36", s37 = "s37", s38 = "s38", s39 = "s39", s40 = "s40", s41 = "s41", s42 = "s42", s43 = "s43", s44 = "s44", s45 = "s45", s46 = "s46", s47 = "s47", s48 = "s48", s49 = "s49", s50 = "s50", s51 = "s51", s52 = "s52", s53 = "s53", s54 = "s54", s55 = "s55", s56 = "s56", s57 = "s57", s58 = "s58", s59 = "s59", s60 = "s60", s61 = "s61", s62 = "s62", s63 = "s63", s64 = "s64", s65 = "s65", s66 = "s66", s67 = "s67", s68 = "s68", s69 = "s69", s70 = "s70", s71 = "s71", s72 = "s72", s73 = "s73", s74 = "s74", s75 = "s75", s76 = "s76", s77 = "s77", s78 = "s78", s79 = "s79", s80 = "s80", s81 = "s81", s82 = "s82", s83 = "s83", s84 = "s84", s85 = "s85", s86 = "s86", s87 = "s87", s88 = "s88", s89 = "s89", s90 = "s90", s91 = "s91", s92 = "s92", s93 = "s93", s94 = "s94", s95 = "s95", s96 = "s96", s97 = "s97", s98 = "s98", s99 = "s99", s100 = "s100", s101 = "s101", s102 = "s102";
+	parameter s1 = "s1", s2 = "s2", s3 = "s3", s4 = "s4", s5 = "s5", s6 = "s6", s7 = "s7", s8 = "s8", s9 = "s9", s10 = "s10", s11 = "s11", s12 = "s12", s13 = "s13", s14 = "s14", s15 = "s15", s16 = "s16", s17 = "s17", s18 = "s18", s19 = "s19", s20 = "s20", s21 = "s21", s22 = "s22", s23 = "s23", s24 = "s24", s25 = "s25", s26 = "s26", s27 = "s27", s28 = "s28", s29 = "s29", s30 = "s30", s31 = "s31", s32 = "s32", s33 = "s33", s34 = "s34", s35 = "s35", s36 = "s36", s37 = "s37", s38 = "s38", s39 = "s39", s40 = "s40", s41 = "s41", s42 = "s42", s43 = "s43", s44 = "s44", s45 = "s45", s46 = "s46", s47 = "s47", s48 = "s48", s49 = "s49", s50 = "s50", s51 = "s51", s52 = "s52", s53 = "s53", s54 = "s54", s55 = "s55", s56 = "s56", s57 = "s57", s58 = "s58", s59 = "s59", s60 = "s60", s61 = "s61", s62 = "s62", s63 = "s63", s64 = "s64", s65 = "s65", s66 = "s66", s67 = "s67", s68 = "s68", s69 = "s69", s70 = "s70", s71 = "s71", s72 = "s72", s73 = "s73", s74 = "s74", s75 = "s75", s76 = "s76", s77 = "s77", s78 = "s78", s79 = "s79", s80 = "s80", s81 = "s81", s82 = "s82", s83 = "s83", s84 = "s84", s85 = "s85", s86 = "s86", s87 = "s87", s88 = "s88", s89 = "s89", s90 = "s90", s91 = "s91", s92 = "s92", s93 = "s93", s94 = "s94", s95 = "s95", s96 = "s96", s97 = "s97", s98 = "s98", s99 = "s99", s100 = "s100";
 	reg[64:0] state, nextState;
 	reg[128:0] label;
 
@@ -14,22 +14,22 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 	end
 
-	always @(sda, scl, clk) begin
+	always @(scl, sda, clk) begin
 		case(state)
 		s1 : begin
 			out <= s1;
 			label <= 1'bx;
-			if(scl == 0) nextState <= s2;
+			if(sda == 1 && scl == 0) nextState <= s2;
 			else nextState <= s1;
 		end
 		s2 : begin
 			out <= s2;
-			if(scl == 1 && sda == 0) nextState <= s3;
+			if(scl == 1) nextState <= s3;
 			else nextState <= s1;
 		end
 		s3 : begin
 			out <= s3;
-			if(scl == 0 && sda == 1) nextState <= s4;
+			if(sda == 0 && scl == 0) nextState <= s4;
 			else nextState <= s1;
 		end
 		s4 : begin
@@ -39,7 +39,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s5 : begin
 			out <= s5;
-			if(scl == 0 && sda == 0) nextState <= s6;
+			if(scl == 0) nextState <= s6;
 			else nextState <= s1;
 		end
 		s6 : begin
@@ -59,7 +59,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s9 : begin
 			out <= s9;
-			if(scl == 0) nextState <= s10;
+			if(sda == 1 && scl == 0) nextState <= s10;
 			else nextState <= s1;
 		end
 		s10 : begin
@@ -69,7 +69,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s11 : begin
 			out <= s11;
-			if(scl == 0 && sda == 1) nextState <= s12;
+			if(scl == 0) nextState <= s12;
 			else nextState <= s1;
 		end
 		s12 : begin
@@ -79,7 +79,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s13 : begin
 			out <= s13;
-			if(scl == 0) nextState <= s14;
+			if(sda == 0 && scl == 0) nextState <= s14;
 			else nextState <= s1;
 		end
 		s14 : begin
@@ -89,7 +89,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s15 : begin
 			out <= s15;
-			if(scl == 0 && sda == 0) nextState <= s16;
+			if(sda == 1 && scl == 0) nextState <= s16;
 			else nextState <= s1;
 		end
 		s16 : begin
@@ -99,7 +99,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s17 : begin
 			out <= s17;
-			if(scl == 0 && sda == 1) nextState <= s18;
+			if(scl == 0) nextState <= s18;
 			else nextState <= s1;
 		end
 		s18 : begin
@@ -129,7 +129,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s23 : begin
 			out <= s23;
-			if(scl == 0) nextState <= s24;
+			if(sda == 0 && scl == 0) nextState <= s24;
 			else nextState <= s1;
 		end
 		s24 : begin
@@ -139,7 +139,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s25 : begin
 			out <= s25;
-			if(scl == 0 && sda == 0) nextState <= s26;
+			if(scl == 0) nextState <= s26;
 			else nextState <= s1;
 		end
 		s26 : begin
@@ -149,7 +149,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s27 : begin
 			out <= s27;
-			if(scl == 0) nextState <= s28;
+			if(sda == 1 && scl == 0) nextState <= s28;
 			else nextState <= s1;
 		end
 		s28 : begin
@@ -159,7 +159,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s29 : begin
 			out <= s29;
-			if(scl == 0 && sda == 1) nextState <= s30;
+			if(sda == 0 && scl == 0) nextState <= s30;
 			else nextState <= s1;
 		end
 		s30 : begin
@@ -169,7 +169,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s31 : begin
 			out <= s31;
-			if(scl == 0 && sda == 0) nextState <= s32;
+			if(scl == 0) nextState <= s32;
 			else nextState <= s1;
 		end
 		s32 : begin
@@ -189,7 +189,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s35 : begin
 			out <= s35;
-			if(scl == 0) nextState <= s36;
+			if(sda == 1 && scl == 0) nextState <= s36;
 			else nextState <= s1;
 		end
 		s36 : begin
@@ -199,7 +199,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s37 : begin
 			out <= s37;
-			if(scl == 0 && sda == 1) nextState <= s38;
+			if(scl == 0) nextState <= s38;
 			else nextState <= s1;
 		end
 		s38 : begin
@@ -209,7 +209,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s39 : begin
 			out <= s39;
-			if(scl == 0) nextState <= s40;
+			if(sda == 0 && scl == 0) nextState <= s40;
 			else nextState <= s1;
 		end
 		s40 : begin
@@ -219,7 +219,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s41 : begin
 			out <= s41;
-			if(scl == 0 && sda == 0) nextState <= s42;
+			if(scl == 0) nextState <= s42;
 			else nextState <= s1;
 		end
 		s42 : begin
@@ -239,7 +239,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s45 : begin
 			out <= s45;
-			if(scl == 0) nextState <= s46;
+			if(sda == 1 && scl == 0) nextState <= s46;
 			else nextState <= s1;
 		end
 		s46 : begin
@@ -249,7 +249,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s47 : begin
 			out <= s47;
-			if(scl == 0 && sda == 1) nextState <= s48;
+			if(scl == 0) nextState <= s48;
 			else nextState <= s1;
 		end
 		s48 : begin
@@ -259,7 +259,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s49 : begin
 			out <= s49;
-			if(scl == 0) nextState <= s50;
+			if(sda == 0 && scl == 0) nextState <= s50;
 			else nextState <= s1;
 		end
 		s50 : begin
@@ -269,7 +269,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s51 : begin
 			out <= s51;
-			if(scl == 0 && sda == 0) nextState <= s52;
+			if(sda == 1 && scl == 0) nextState <= s52;
 			else nextState <= s1;
 		end
 		s52 : begin
@@ -279,7 +279,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s53 : begin
 			out <= s53;
-			if(scl == 0 && sda == 1) nextState <= s54;
+			if(scl == 0) nextState <= s54;
 			else nextState <= s1;
 		end
 		s54 : begin
@@ -319,7 +319,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s61 : begin
 			out <= s61;
-			if(scl == 0) nextState <= s62;
+			if(sda == 0 && scl == 0) nextState <= s62;
 			else nextState <= s1;
 		end
 		s62 : begin
@@ -329,7 +329,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s63 : begin
 			out <= s63;
-			if(scl == 0 && sda == 0) nextState <= s64;
+			if(scl == 0) nextState <= s64;
 			else nextState <= s1;
 		end
 		s64 : begin
@@ -339,7 +339,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s65 : begin
 			out <= s65;
-			if(scl == 0) nextState <= s66;
+			if(sda == 1 && scl == 0) nextState <= s66;
 			else nextState <= s1;
 		end
 		s66 : begin
@@ -349,7 +349,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s67 : begin
 			out <= s67;
-			if(scl == 0 && sda == 1) nextState <= s68;
+			if(sda == 0 && scl == 0) nextState <= s68;
 			else nextState <= s1;
 		end
 		s68 : begin
@@ -359,7 +359,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s69 : begin
 			out <= s69;
-			if(scl == 0 && sda == 0) nextState <= s70;
+			if(scl == 0) nextState <= s70;
 			else nextState <= s1;
 		end
 		s70 : begin
@@ -369,7 +369,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s71 : begin
 			out <= s71;
-			if(scl == 0) nextState <= s72;
+			if(sda == 1 && scl == 0) nextState <= s72;
 			else nextState <= s1;
 		end
 		s72 : begin
@@ -379,7 +379,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s73 : begin
 			out <= s73;
-			if(scl == 0 && sda == 1) nextState <= s74;
+			if(scl == 0) nextState <= s74;
 			else nextState <= s1;
 		end
 		s74 : begin
@@ -399,7 +399,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s77 : begin
 			out <= s77;
-			if(scl == 0) nextState <= s78;
+			if(sda == 0 && scl == 0) nextState <= s78;
 			else nextState <= s1;
 		end
 		s78 : begin
@@ -409,7 +409,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s79 : begin
 			out <= s79;
-			if(scl == 0 && sda == 0) nextState <= s80;
+			if(scl == 0) nextState <= s80;
 			else nextState <= s1;
 		end
 		s80 : begin
@@ -419,7 +419,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s81 : begin
 			out <= s81;
-			if(scl == 0) nextState <= s82;
+			if(sda == 1 && scl == 0) nextState <= s82;
 			else nextState <= s1;
 		end
 		s82 : begin
@@ -429,7 +429,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s83 : begin
 			out <= s83;
-			if(scl == 0 && sda == 1) nextState <= s84;
+			if(sda == 0 && scl == 0) nextState <= s84;
 			else nextState <= s1;
 		end
 		s84 : begin
@@ -439,7 +439,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s85 : begin
 			out <= s85;
-			if(scl == 0 && sda == 0) nextState <= s86;
+			if(scl == 0) nextState <= s86;
 			else nextState <= s1;
 		end
 		s86 : begin
@@ -459,7 +459,7 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s89 : begin
 			out <= s89;
-			if(scl == 0) nextState <= s90;
+			if(sda == 1 && scl == 0) nextState <= s90;
 			else nextState <= s1;
 		end
 		s90 : begin
@@ -469,32 +469,32 @@ module i2c_raw(reset, clk, sda, scl, out);
 		end
 		s91 : begin
 			out <= s91;
-			if(scl == 0 && sda == 1) nextState <= s92;
+			if(scl == 0) nextState <= s92;
 			else nextState <= s1;
 		end
 		s92 : begin
 			out <= s92;
-			if(scl == 1) nextState <= s93;
+			if(sda == 0) nextState <= s93;
 			else nextState <= s1;
 		end
 		s93 : begin
 			out <= s93;
-			if(scl == 0) nextState <= s94;
+			if(scl == 1) nextState <= s94;
 			else nextState <= s1;
 		end
 		s94 : begin
 			out <= s94;
-			if(sda == 0) nextState <= s95;
+			if(sda == 1) nextState <= s95;
 			else nextState <= s1;
 		end
 		s95 : begin
 			out <= s95;
-			if(scl == 1) nextState <= s96;
+			if(scl == 0) nextState <= s96;
 			else nextState <= s1;
 		end
 		s96 : begin
 			out <= s96;
-			if(sda == 1) nextState <= s97;
+			if(scl == 1) nextState <= s97;
 			else nextState <= s1;
 		end
 		s97 : begin
@@ -513,16 +513,6 @@ module i2c_raw(reset, clk, sda, scl, out);
 			else nextState <= s1;
 		end
 		s100 : begin
-			out <= s100;
-			if(scl == 1) nextState <= s101;
-			else nextState <= s1;
-		end
-		s101 : begin
-			out <= s101;
-			if(scl == 0) nextState <= s102;
-			else nextState <= s1;
-		end
-		s102 : begin
 		end
 		endcase
 	end
