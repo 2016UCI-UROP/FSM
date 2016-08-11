@@ -163,8 +163,7 @@ def setFSM(lines, fsm):
 
         if line[0] == '#' and line[1] != '0':
             stat.setTransition(tempdic, "s" + str(idx + 1))
-            if idx != 1:
-                fsm.setState(stat)
+            fsm.setState(stat)
             idx += 1
             tempdic = {}
             stat = State("s" + str(idx))
