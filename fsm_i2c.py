@@ -124,8 +124,6 @@ class State:
 
 
 class Transition:
-    # s_variable = ""
-    # s_value = '0'
     dic_tranValue = {}
     s_dest = ""
 
@@ -139,7 +137,6 @@ class Transition:
             string += k + " changes to " + self.dic_tranValue[k] + " and "
         string = string[:-4]
         print(string + "\n\t\t--> Next State is " + self.s_dest)
-
 
 # set FSM class
 def setFSM(lines, fsm):
