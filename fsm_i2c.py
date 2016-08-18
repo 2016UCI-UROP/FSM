@@ -6,6 +6,63 @@ class FSM:
     dic_inputVal = {}
     li_states = []
 
+    # set FSM class
+    def setFSM(self, lines):
+        stat = 0
+        idx = 1
+        dontCareVar = '0'
+        dontCare = 0
+        tempdic = {}
+
+        for line in lines:
+            # print(line)
+            if line[0] == '$':
+                line = line[1:]
+                words = line.split()
+
+                # read module name and original value names at .vcd and write on the FSM class
+                if words[0] == 'scope':
+                    fsm.setModuleName(words[2])
+                elif words[0] == 'var' and words[1] == 'reg':
+                    print(words[4], "is assigned to", words[3])
+                    fsm.setInputValue(words[3], words[4])
+                continue
+
+            if line[0] == '#':
+                if line[1] == '0':
+                    continue
+                if idx > 1:
+                    stat.setTransition(tempdic, "s" + str(idx + 1))
+                    if dontCare < 3:
+                        fsm.setState(stat)
+                        if dontCare == 1:
+                            dontCare = 3
+
+
+                tempdic = {}
+                stat = State("s" + str(idx))
+                idx += 1
+
+                continue
+            if line == "...\n":
+                stat.setIsLoop()
+                continue
+
+            val = line[0]
+            var = fsm.getInputVal(line[1])
+            tempdic[var] = val
+            if val == 'x':
+                dontCare = 1
+                dontCareVar = var
+                print(val, var)
+            elif dontCareVar == var:
+                print(val, var, "aaaa")
+                dontCare = 2
+                dontCareVar = '0'
+                stat.setIsLoop()
+
+        return fsm
+
     # print the header part of verilog file
     def printHeader(self, output):
         output.write("module " + self.s_moduleName + "(reset, clk, " + self.makeInputVarString() + ", out);\n")
@@ -50,23 +107,15 @@ class FSM:
 
                 string += '\t\t\tif('
                 # if phrase
-                for trans in curState.li_transitions:
-                    for key in trans.dic_tranValue.keys():
-                        string += key + ' == ' + trans.dic_tranValue[key] + ' && '
-                string = string[:-4]
-
+                string += self.makeConditionString(i)
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
                 if i > 0:
                     string += '\t\t\telse if('
                     # else-if phrase
-                    for trans in self.li_states[i-1].li_transitions:
-                        for key in trans.dic_tranValue.keys():
-                            string += key + ' == ' + trans.dic_tranValue[key] + ' && '
-                    string = string[:-4]
-
+                    string += self.makeConditionString(i - 1)
                     string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
 
-                if self.li_states[i + 1].b_isLoop == 0:
+                if self.li_states[i].b_isLoop == 0:
                     string += "\t\t\telse nextState <= s1;\n"
                 else:
                     string += "\t\t\telse nextState <=" + curState.s_name + ";\n"
@@ -75,6 +124,15 @@ class FSM:
             #curState.printState()
 
         output.write('\t\t' + 'endcase\n\t' + 'end\n' + 'endmodule')
+
+    def makeConditionString(self, idx):
+        string = ""
+        for trans in self.li_states[idx].li_transitions:
+            for key in trans.dic_tranValue.keys():
+                if trans.dic_tranValue[key] != 'x':
+                    string += key + ' == ' + trans.dic_tranValue[key] + ' && '
+        return string[:-4]
+
 
     # make the input value string (e.g. i1, i2, i3)
     def makeInputVarString(self):
@@ -151,51 +209,14 @@ class Transition:
         print(string + "\n\t\t--> Next State is " + self.s_dest)
 
 
-# set FSM class
-def setFSM(lines, fsm):
-    stat = 0
-    idx = 1
-    tempdic = {}
-
-    for line in lines:
-        #print(line)
-        if line[0] == '$':
-            line = line[1:]
-            words = line.split()
-
-            # read module name and original value names at .vcd and write on the FSM class
-            if words[0] == 'scope':
-                fsm.setModuleName(words[2])
-            elif words[0] == 'var' and words[1] == 'reg':
-                print(words[4], "is assigned to", words[3])
-                fsm.setInputValue(words[3], words[4])
-            continue
-
-        if line[0] == '#':
-            if line[1] == '0':
-                continue
-            if idx > 1:
-                stat.setTransition(tempdic, "s" + str(idx + 1))
-                fsm.setState(stat)
-            tempdic = {}
-            stat = State("s" + str(idx))
-            idx += 1
-            continue
-
-        val = line[0]
-        var = fsm.getInputVal(line[1])
-        tempdic[var] = val
-    return fsm
-
-
 if __name__ == "__main__":
-    rf = open("i2c_vcd.vcd", "r")
+    rf = open("i2cx.vcd", "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
     lines = rf.readlines()
     lines = lines[10:]
-    fsm = setFSM(lines, fsm)
+    fsm.setFSM(lines)
     print("FSM created\n")
 
     fsm.printHeader(wf)
