@@ -33,10 +33,10 @@ class FSM:
                     continue
                 if idx > 1:
                     stat.setTransition(tempdic, "s" + str(idx + 1))
-                    if dontCare < 3:
+                    if dontCare < 2:
                         fsm.setState(stat)
                         if dontCare == 1:
-                            dontCare = 3
+                            dontCare = 2
 
 
                 tempdic = {}
@@ -57,7 +57,7 @@ class FSM:
                 print(val, var)
             elif dontCareVar == var:
                 print(val, var, "aaaa")
-                dontCare = 2
+                dontCare = 0
                 dontCareVar = '0'
                 stat.setIsLoop()
 

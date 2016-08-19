@@ -1,7 +1,7 @@
 module i2c_raw(reset, clk, scl, sda, out);
 	input reset, clk, scl, sda;
 	output reg[64:0] out;
-	parameter s1 = "s1", s2 = "s2", s3 = "s3", s4 = "s4", s5 = "s5", s6 = "s6", s7 = "s7", s8 = "s8", s9 = "s9", s10 = "s10", s11 = "s11", s12 = "s12", s13 = "s13", s14 = "s14", s20 = "s20", s21 = "s21", s22 = "s22", s23 = "s23", s24 = "s24", s25 = "s25", s26 = "s26", s27 = "s27", s28 = "s28", s29 = "s29", s30 = "s30", s31 = "s31", s32 = "s32", s33 = "s33", s34 = "s34", s35 = "s35", s36 = "s36", s37 = "s37", s38 = "s38", s39 = "s39", s40 = "s40", s41 = "s41", s42 = "s42", s43 = "s43", s44 = "s44", s45 = "s45", s46 = "s46", s47 = "s47", s48 = "s48", s49 = "s49", s50 = "s50", s51 = "s51", s52 = "s52", s53 = "s53", s54 = "s54", s55 = "s55", s56 = "s56", s57 = "s57", s58 = "s58", s59 = "s59", s60 = "s60", s61 = "s61", s62 = "s62", s63 = "s63", s64 = "s64", s65 = "s65", s66 = "s66", s67 = "s67", s68 = "s68", s69 = "s69", s70 = "s70", s71 = "s71", s72 = "s72", s73 = "s73", s74 = "s74", s75 = "s75", s76 = "s76", s77 = "s77", s78 = "s78", s79 = "s79", s80 = "s80", s81 = "s81", s82 = "s82", s83 = "s83", s84 = "s84", s85 = "s85", s86 = "s86", s87 = "s87", s88 = "s88", s89 = "s89", s90 = "s90", s91 = "s91", s92 = "s92", s93 = "s93", s94 = "s94", s95 = "s95", s96 = "s96", s97 = "s97", s98 = "s98", s99 = "s99", s100 = "s100", s101 = "s101", s102 = "s102", s103 = "s103", s104 = "s104", s105 = "s105", s106 = "s106", s107 = "s107", s108 = "s108", s109 = "s109", s110 = "s110", s111 = "s111";
+	parameter s1 = "s1", s2 = "s2", s3 = "s3", s4 = "s4", s5 = "s5", s6 = "s6", s7 = "s7", s8 = "s8", s9 = "s9", s10 = "s10", s11 = "s11", s12 = "s12", s13 = "s13", s14 = "s14", s20 = "s20", s21 = "s21", s22 = "s22", s23 = "s23", s24 = "s24", s25 = "s25", s26 = "s26", s27 = "s27", s28 = "s28", s29 = "s29", s30 = "s30", s31 = "s31", s32 = "s32", s33 = "s33", s34 = "s34", s35 = "s35", s36 = "s36", s37 = "s37", s38 = "s38", s39 = "s39", s40 = "s40", s41 = "s41", s42 = "s42", s43 = "s43", s44 = "s44", s45 = "s45", s46 = "s46", s47 = "s47", s48 = "s48", s49 = "s49", s50 = "s50", s51 = "s51", s52 = "s52", s53 = "s53", s54 = "s54", s55 = "s55", s56 = "s56", s57 = "s57", s58 = "s58", s59 = "s59", s60 = "s60", s61 = "s61", s62 = "s62", s63 = "s63", s64 = "s64", s65 = "s65", s66 = "s66", s67 = "s67", s68 = "s68", s69 = "s69", s70 = "s70", s71 = "s71", s72 = "s72", s73 = "s73", s74 = "s74", s75 = "s75", s76 = "s76", s77 = "s77", s78 = "s78", s79 = "s79", s80 = "s80", s81 = "s81", s82 = "s82", s83 = "s83", s84 = "s84", s85 = "s85", s86 = "s86", s87 = "s87", s88 = "s88", s89 = "s89", s90 = "s90", s91 = "s91", s92 = "s92", s93 = "s93", s94 = "s94", s95 = "s95", s96 = "s96", s97 = "s97", s98 = "s98", s99 = "s99", s100 = "s100", s101 = "s101", s102 = "s102";
 	reg[64:0] state, nextState;
 	reg[128:0] label;
 
@@ -593,60 +593,6 @@ module i2c_raw(reset, clk, scl, sda, out);
 			else nextState <= s1;
 		end
 		s102 : begin
-			out <= s102;
-			if(scl == 0) nextState <= s103;
-			else if(sda == 1) nextState <= s102;
-			else nextState <= s1;
-		end
-		s103 : begin
-			out <= s103;
-			if(scl == 1) nextState <= s104;
-			else if(scl == 0) nextState <= s103;
-			else nextState <= s1;
-		end
-		s104 : begin
-			out <= s104;
-			if(scl == 0) nextState <= s105;
-			else if(scl == 1) nextState <= s104;
-			else nextState <= s1;
-		end
-		s105 : begin
-			out <= s105;
-			if(scl == 1) nextState <= s106;
-			else if(scl == 0) nextState <= s105;
-			else nextState <= s1;
-		end
-		s106 : begin
-			out <= s106;
-			if(scl == 0) nextState <= s107;
-			else if(scl == 1) nextState <= s106;
-			else nextState <= s1;
-		end
-		s107 : begin
-			out <= s107;
-			if(scl == 1) nextState <= s108;
-			else if(scl == 0) nextState <= s107;
-			else nextState <= s1;
-		end
-		s108 : begin
-			out <= s108;
-			if(scl == 0) nextState <= s109;
-			else if(scl == 1) nextState <= s108;
-			else nextState <= s1;
-		end
-		s109 : begin
-			out <= s109;
-			if(scl == 1) nextState <= s110;
-			else if(scl == 0) nextState <= s109;
-			else nextState <= s1;
-		end
-		s110 : begin
-			out <= s110;
-			if(scl == 0) nextState <= s111;
-			else if(scl == 1) nextState <= s110;
-			else nextState <= s1;
-		end
-		s111 : begin
 		end
 		endcase
 	end
