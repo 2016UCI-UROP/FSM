@@ -1,6 +1,30 @@
-# written by Charlotte, Yunho Kim
-# make a state machine from .vcd file
+"""
+   fsm_i2c.py
 
+   written by  Yunho Kim, Charlotte
+
+   Create a Finite State Machine as Verilog from the vcd format timing diagram
+
+"""
+
+"""
+    @ FSM Class
+        Set the data of Finite State Machine from the vcd file.
+        Print the FSM to the Verilog format.
+
+    - Variable -
+        s_moduleName : Name of FSM
+        dic_inputVal : A pair of vcd variable name and original variable name
+                        It defines from vcd header section
+        li_states : A List of state classes
+
+    - Function -
+        setFSM() : Setting class local variables and state information from the each line of vcd file
+        printHeader() : Print the header part of verilog file
+        printInitialize() : Print the initialize part of verilog file
+        printTransitions() : Print the state changing conditions & transition part of verilog file
+        makeConditionString() : Create the condition statement for state changing
+"""
 class FSM:
     s_moduleName = ""
     dic_inputVal = {}
@@ -166,6 +190,20 @@ class FSM:
         return self.dic_inputVal[k]
 
 
+"""
+    @ State Class
+        Store the information of each state
+
+    - Variable -
+        s_name : State name
+        li_transition : A list of transition
+        b_isLoop : boolean variable for check loop back to the first state
+        s_labled : Lable nane. if doesn't have anything, value is -1
+
+    - Function -
+        setTransition() : Add transition data to the list
+"""
+
 class State:
     s_name = ""
     li_transitions = []
@@ -190,6 +228,16 @@ class State:
         self.s_labeled = 0
 
 
+"""
+    @ Transition Class
+        Store the information of each transition
+
+    - Variable -
+        dic_tranValue : A pair of FSM input variable and value
+
+    - Function -
+        PrintTransitionInfo() : Print the transition data on the console
+"""
 
 class Transition:
     # s_variable = ""
