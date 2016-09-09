@@ -75,6 +75,7 @@ class FSM:
                 sda = val
             if tempdic.get('scl') == '0' and len(tempdic) == 1 and sda != 'x':
                 tempdic['sda'] = sda
+        """"""
 
         return fsm
 
