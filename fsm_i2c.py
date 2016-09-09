@@ -37,6 +37,7 @@ class FSM:
         dontCareVar = '0'
         dontCare = 0
         tempdic = {}
+        sda = ''
 
         for line in lines:
             # print(line)
@@ -55,42 +56,34 @@ class FSM:
             if line[0] == '#':
                 if line[1] == '0':
                     continue
-                if idx > 1:
+                if idx > 1 and not (tempdic.get('scl') == '1' and len(tempdic) == 1):
                     stat.setTransition(tempdic, "s" + str(idx + 1))
-                    if dontCare < 2:
-                        fsm.setState(stat)
-                        if dontCare == 1:
-                            dontCare = 2
-
-
+                    fsm.setState(stat)
+                #reset transitions, create new State
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
-
                 continue
             if line == "...\n":
                 stat.setIsLoop()
                 continue
 
+            #write the transitions to dictionary
             val = line[0]
             var = fsm.getInputVal(line[1])
             tempdic[var] = val
-            if val == 'x':
-                dontCare = 1
-                dontCareVar = var
-                print(val, var)
-            elif dontCareVar == var:
-                print(val, var, "aaaa")
-                dontCare = 0
-                dontCareVar = '0'
-                stat.setIsLoop()
+            if var == 'sda':
+                sda = val
+            if tempdic.get('scl') == '0' and len(tempdic) == 1:
+                tempdic['sda'] = sda
 
         return fsm
 
+
     # print the header part of verilog file
     def printHeader(self, output):
-        output.write("module " + self.s_moduleName + "(reset, clk, " + self.makeInputVarString() + ", out);\n")
-        output.write("\tinput reset, clk, " + self.makeInputVarString() + ";\n")
+        output.write("module " + self.s_moduleName + "(reset, " + self.makeInputVarString() + ", out);\n")
+        output.write("\tinput reset, " + self.makeInputVarString() + ";\n")
         output.write("\toutput reg[64:0] out;\n")
         output.write("\tparameter " + self.makeStateString() + ";\n")
         output.write("\treg[64:0] state, nextState;\n")  # change 1 bit into 16 bits
@@ -108,7 +101,7 @@ class FSM:
 
     # print the state changes & transition part of verilog file
     def printTransition(self, output):
-        output.write('\t' + 'always @(' + self.makeInputVarString() + ', clk) begin\n\t\t' + 'case(state)\n')
+        output.write('\t' + 'always @(' + self.makeInputVarString() + ') begin\n\t\t' + 'case(state)\n')
         for i in range(0, len(self.li_states)):
             curState = self.li_states[i]
             if i == len(self.li_states) - 1:
@@ -136,7 +129,7 @@ class FSM:
                 if i > 0:
                     string += '\t\t\telse if('
                     # else-if phrase
-                    string += self.makeConditionString(i - 1)
+                    string += self.makeElifConditionString(i - 1)
                     string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
 
                 if self.li_states[i].b_isLoop == 0:
@@ -154,6 +147,14 @@ class FSM:
         for trans in self.li_states[idx].li_transitions:
             for key in trans.dic_tranValue.keys():
                 if trans.dic_tranValue[key] != 'x':
+                    string += key + ' == ' + trans.dic_tranValue[key] + ' && '
+        return string[:-4]
+
+    def makeElifConditionString(self, idx):
+        string = ""
+        for trans in self.li_states[idx].li_transitions:
+            for key in trans.dic_tranValue.keys():
+                if trans.dic_tranValue[key] != 'x' and key != 'scl':
                     string += key + ' == ' + trans.dic_tranValue[key] + ' && '
         return string[:-4]
 
@@ -258,7 +259,7 @@ class Transition:
 
 
 if __name__ == "__main__":
-    rf = open("i2cx.vcd", "r")
+    rf = open("i2c_vcd.vcd", "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
