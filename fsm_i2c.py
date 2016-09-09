@@ -34,8 +34,6 @@ class FSM:
     def setFSM(self, lines):
         stat = 0
         idx = 1
-        dontCareVar = '0'
-        dontCare = 0
         tempdic = {}
         sda = ''
 
@@ -52,17 +50,18 @@ class FSM:
                     print(words[4], "is assigned to", words[3])
                     fsm.setInputValue(words[3], words[4])
                 continue
-
             if line[0] == '#':
                 if line[1] == '0':
                     continue
-                if idx > 1 and not (tempdic.get('scl') == '1' and len(tempdic) == 1):
+                if idx > 1 and not (len(tempdic) == 1):
                     stat.setTransition(tempdic, "s" + str(idx + 1))
                     fsm.setState(stat)
                 #reset transitions, create new State
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
+                if sda == 'x':
+                    stat.b_isLoop = 1
                 continue
             if line == "...\n":
                 stat.setIsLoop()
@@ -74,7 +73,7 @@ class FSM:
             tempdic[var] = val
             if var == 'sda':
                 sda = val
-            if tempdic.get('scl') == '0' and len(tempdic) == 1:
+            if tempdic.get('scl') == '0' and len(tempdic) == 1 and sda != 'x':
                 tempdic['sda'] = sda
 
         return fsm
@@ -126,10 +125,12 @@ class FSM:
                 # if phrase
                 string += self.makeConditionString(i)
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
-                if i > 0:
+
+                elifStr = self.makeElifConditionString(i - 1)
+                if i > 0 and elifStr != '':
                     string += '\t\t\telse if('
                     # else-if phrase
-                    string += self.makeElifConditionString(i - 1)
+                    string += elifStr
                     string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
 
                 if self.li_states[i].b_isLoop == 0:
@@ -259,7 +260,7 @@ class Transition:
 
 
 if __name__ == "__main__":
-    rf = open("i2c_vcd.vcd", "r")
+    rf = open("i2cx.vcd", "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
