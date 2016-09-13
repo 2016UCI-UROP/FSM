@@ -56,10 +56,12 @@ class FSM:
                 if idx > 1 and not (len(tempdic) == 1):
                     stat.setTransition(tempdic, "s" + str(idx + 1))
                     fsm.setState(stat)
+
                 #reset transitions, create new State
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
+
                 if sda == 'x':
                     stat.b_isLoop = 1
                 continue
@@ -75,8 +77,8 @@ class FSM:
                 sda = val
             if tempdic.get('scl') == '0' and len(tempdic) == 1 and sda != 'x':
                 tempdic['sda'] = sda
-        """"""
-
+            if var == 'scl' and val == '0':
+                tempdic['scl'] = '1'
         return fsm
 
 
@@ -126,18 +128,14 @@ class FSM:
                 # if phrase
                 string += self.makeConditionString(i)
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
-
-                elifStr = self.makeElifConditionString(i - 1)
-                if i > 0 and elifStr != '':
-                    string += '\t\t\telse if('
+                if i > 0:
                     # else-if phrase
-                    string += elifStr
-                    string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
+                    string += '\t\t\telse if(scl == 0) nextState <= ' + self.li_states[i].s_name + ';\n'
 
                 if self.li_states[i].b_isLoop == 0:
-                    string += "\t\t\telse nextState <= s1;\n"
+                    string += "\t\t\telse nextState <= " + self.li_states[0].s_name + ";\n"
                 else:
-                    string += "\t\t\telse nextState <=" + curState.s_name + ";\n"
+                    string += "\t\t\telse nextState <= " + curState.s_name + ";\n"
                 string += '\t\t' + 'end\n'
                 output.write(string)
             #curState.printState()
@@ -158,7 +156,7 @@ class FSM:
             for key in trans.dic_tranValue.keys():
                 if trans.dic_tranValue[key] != 'x' and key != 'scl':
                     string += key + ' == ' + trans.dic_tranValue[key] + ' && '
-        return string[:-4]
+        return string
 
 
     # make the input value string (e.g. i1, i2, i3)
@@ -261,7 +259,7 @@ class Transition:
 
 
 if __name__ == "__main__":
-    rf = open("i2cx.vcd", "r")
+    rf = open("i2c_vcd.vcd", "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
