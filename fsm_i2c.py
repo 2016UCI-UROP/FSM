@@ -1,23 +1,19 @@
+
 """
    fsm_i2c.py
-
    written by  Yunho Kim, Charlotte
-
    Create a Finite State Machine as Verilog from the vcd format timing diagram
-
 """
 
 """
     @ FSM Class
         Set the data of Finite State Machine from the vcd file.
         Print the FSM to the Verilog format.
-
     - Variable -
         s_moduleName : Name of FSM
         dic_inputVal : A pair of vcd variable name and original variable name
                         It defines from vcd header section
         li_states : A List of state classes
-
     - Function -
         setFSM() : Setting class local variables and state information from the each line of vcd file
         printHeader() : Print the header part of verilog file
@@ -34,8 +30,9 @@ class FSM:
     def setFSM(self, lines):
         stat = 0
         idx = 1
+        dontCareVar = '0'
+        dontCare = 0
         tempdic = {}
-        sda = ''
 
         for line in lines:
             # print(line)
@@ -50,37 +47,41 @@ class FSM:
                     print(words[4], "is assigned to", words[3])
                     fsm.setInputValue(words[3], words[4])
                 continue
+
             if line[0] == '#':
                 if line[1] == '0':
                     continue
-                if idx > 1 and not (len(tempdic) == 1):
+                if idx > 1:
                     stat.setTransition(tempdic, "s" + str(idx + 1))
-                    fsm.setState(stat)
+                    if dontCare < 2:
+                        fsm.setState(stat)
+                        if dontCare == 1:
+                            dontCare = 2
 
-                #reset transitions, create new State
+
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
 
-                if sda == 'x':
-                    stat.b_isLoop = 1
                 continue
             if line == "...\n":
                 stat.setIsLoop()
                 continue
 
-            #write the transitions to dictionary
             val = line[0]
             var = fsm.getInputVal(line[1])
             tempdic[var] = val
-            if var == 'sda':
-                sda = val
-            if tempdic.get('scl') == '0' and len(tempdic) == 1 and sda != 'x':
-                tempdic['sda'] = sda
-            if var == 'scl' and val == '0':
-                tempdic['scl'] = '1'
-        return fsm
+            if val == 'x':
+                dontCare = 1
+                dontCareVar = var
+                print(val, var)
+            elif dontCareVar == var:
+                print(val, var, "aaaa")
+                dontCare = 0
+                dontCareVar = '0'
+                stat.setIsLoop()
 
+        return fsm
 
     # print the header part of verilog file
     def printHeader(self, output):
@@ -129,13 +130,15 @@ class FSM:
                 string += self.makeConditionString(i)
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
                 if i > 0:
+                    string += '\t\t\telse if('
                     # else-if phrase
-                    string += '\t\t\telse if(scl == 0) nextState <= ' + self.li_states[i].s_name + ';\n'
+                    string += self.makeConditionString(i - 1)
+                    string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
 
                 if self.li_states[i].b_isLoop == 0:
-                    string += "\t\t\telse nextState <= " + self.li_states[0].s_name + ";\n"
+                    string += "\t\t\telse nextState <= s1;\n"
                 else:
-                    string += "\t\t\telse nextState <= " + curState.s_name + ";\n"
+                    string += "\t\t\telse nextState <=" + curState.s_name + ";\n"
                 string += '\t\t' + 'end\n'
                 output.write(string)
             #curState.printState()
@@ -149,14 +152,6 @@ class FSM:
                 if trans.dic_tranValue[key] != 'x':
                     string += key + ' == ' + trans.dic_tranValue[key] + ' && '
         return string[:-4]
-
-    def makeElifConditionString(self, idx):
-        string = ""
-        for trans in self.li_states[idx].li_transitions:
-            for key in trans.dic_tranValue.keys():
-                if trans.dic_tranValue[key] != 'x' and key != 'scl':
-                    string += key + ' == ' + trans.dic_tranValue[key] + ' && '
-        return string
 
 
     # make the input value string (e.g. i1, i2, i3)
@@ -194,13 +189,11 @@ class FSM:
 """
     @ State Class
         Store the information of each state
-
     - Variable -
         s_name : State name
         li_transition : A list of transition
         b_isLoop : boolean variable for check loop back to the first state
         s_labled : Lable nane. if doesn't have anything, value is -1
-
     - Function -
         setTransition() : Add transition data to the list
 """
@@ -232,10 +225,8 @@ class State:
 """
     @ Transition Class
         Store the information of each transition
-
     - Variable -
         dic_tranValue : A pair of FSM input variable and value
-
     - Function -
         PrintTransitionInfo() : Print the transition data on the console
 """
@@ -274,3 +265,5 @@ if __name__ == "__main__":
 
     rf.close()
     wf.close()
+
+
