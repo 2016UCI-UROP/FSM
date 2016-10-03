@@ -1,0 +1,39 @@
+read VCD file
+set vcd_file to VCD file
+while vcd_file is not empty:
+    if read Header and Node information of VCD file:
+        Signal_List = {SDA, SCL}
+        First_State = initial state
+    end if
+    if read Value Changes:
+        if read time
+            create_state(state_name)
+	while time does not changed:
+	    vcd_lines = read a line from the vcd_file
+            end while
+        end if
+        Condition_List = create_condition_list(vcd_lines)
+        create_transition(src_state, dest_state, Condition_List)
+        create_back_transition_condition(Condition_List, Signal_List)
+        create_back_transition(src_state, First_State, )
+    end if
+end while
+print Verilog code for Finite State Machine
+
+define Create_Condition_List(vcd_lines)
+   while vcd_line is not end:
+      Create condition_pair from the vcd_lines
+      Add condition_pair into the Condition_List
+   end while
+   return Condition_List
+
+define Create_Back_Transition_Conditions(Condition_List, Signal_List)
+	Back_transition_conditions = All conditions from Signal_List except Condition_List
+return Back_Transition_Conditions
+
+DEFINE Create_back_transition(Signal_List, Value_List)
+   WHILE(occured time is the same)
+      Create condition_pair from Signal_List and Value_List
+      Add condition_pair into the Condition_List
+   END WHILE
+Return Condition_List
