@@ -1,4 +1,4 @@
-# 2016UCI-UROP
+# Capturing a Description of Behavior from the Natural Language
 
 Yunho Kim, Soryung Lee
 
