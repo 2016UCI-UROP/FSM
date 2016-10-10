@@ -1,39 +1,30 @@
 read VCD file
-set vcd_file to VCD file
-while vcd_file is not empty:
+while(VCD file is not empty)
     if read Header and Node information of VCD file:
-        Signal_List = {SDA, SCL}
-        First_State = initial state
+        Signal List = {SDA, SCL}
+        Create_State(name of initial state)
     end if
     if read Value Changes:
-        if read time
-            create_state(state_name)
-	while time does not changed:
-	    vcd_lines = read a line from the vcd_file
-            end while
-        end if
-        Condition_List = create_condition_list(vcd_lines)
-        create_transition(src_state, dest_state, Condition_List)
-        create_back_transition_condition(Condition_List, Signal_List)
-        create_back_transition(src_state, First_State, )
+    	Create_State(name of current state)
+    	Create_Condition_List(VCD file)
+        Create_Transition(src_state, dest_state, Condition_List)
+        Create_Back_Transition_Conditions(Condition_List, Signal_List)
+        Add_Back_Transition(src_state, First_State, Back_Transition_Conditions)
     end if
 end while
 print Verilog code for Finite State Machine
 
-define Create_Condition_List(vcd_lines)
-   while vcd_line is not end:
-      Create condition_pair from the vcd_lines
-      Add condition_pair into the Condition_List
-   end while
-   return Condition_List
+define Create_Condition_List(VCD file)
+	Condition_List = []
+	line = Read_Line(VCD file)
+	while(NotNewTime(line)) 
+		cp = Condtion_Pair(line)
+		Insert(Condition_List, cp)
+		line = ReadLine(VCD)
+	end while
+return Condition_List
 
 define Create_Back_Transition_Conditions(Condition_List, Signal_List)
-	Back_transition_conditions = All conditions from Signal_List except Condition_List
+	product_set = Cartesian_Product(Signal_List, {0, 1}) 
+	Back_Transition_Condtions = product_set - Condition_List
 return Back_Transition_Conditions
-
-DEFINE Create_back_transition(Signal_List, Value_List)
-   WHILE(occured time is the same)
-      Create condition_pair from Signal_List and Value_List
-      Add condition_pair into the Condition_List
-   END WHILE
-Return Condition_List
