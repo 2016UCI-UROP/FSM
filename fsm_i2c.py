@@ -133,6 +133,8 @@ class FSM:
             for key in trans.dic_tranValue.keys():
                 if trans.dic_tranValue[key] != 'x':
                     string += key + ' == ' + trans.dic_tranValue[key] + ' && '
+                else:
+                    string += key + ' === 1\'bx' + ' && '
         return string[:-4]
 
 
@@ -246,7 +248,7 @@ class Transition:
 
 
 if __name__ == "__main__":
-    rf = open("dontcare.vcd", "r")
+    rf = open("unid.vcd", "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
