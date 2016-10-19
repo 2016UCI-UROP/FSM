@@ -30,26 +30,26 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s3 : begin
 			out <= s3;
-			if(scl == 0 && sda == 1) nextState <= s4;
+			if(sda == 1 && scl == 0) nextState <= s4;
 			else if(sda == 0) nextState <= s3;
 			else nextState <= s1;
 		end
 		s4 : begin
 			out <= s4;
 			if(scl == 1) nextState <= s5;
-			else if(scl == 0 && sda == 1) nextState <= s4;
+			else if(sda == 1 && scl == 0) nextState <= s4;
 			else nextState <= s1;
 		end
 		s5 : begin
 			out <= s5;
-			if(scl == 0 && sda == 0) nextState <= s6;
+			if(sda == 0 && scl == 0) nextState <= s6;
 			else if(scl == 1) nextState <= s5;
 			else nextState <= s1;
 		end
 		s6 : begin
 			out <= s6;
 			if(scl == 1) nextState <= s7;
-			else if(scl == 0 && sda == 0) nextState <= s6;
+			else if(sda == 0 && scl == 0) nextState <= s6;
 			else nextState <= s1;
 		end
 		s7 : begin
@@ -66,14 +66,14 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s9 : begin
 			out <= s9;
-			if(scl == 0 && sda == 1) nextState <= s10;
+			if(sda == 1 && scl == 0) nextState <= s10;
 			else if(scl == 1) nextState <= s9;
 			else nextState <= s1;
 		end
 		s10 : begin
 			out <= s10;
 			if(scl == 1) nextState <= s11;
-			else if(scl == 0 && sda == 1) nextState <= s10;
+			else if(sda == 1 && scl == 0) nextState <= s10;
 			else nextState <= s1;
 		end
 		s11 : begin
@@ -84,14 +84,14 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s17 : begin
 			out <= s17;
-			if(scl == 0 && sda == 1) nextState <= s18;
+			if(sda == 1 && scl == 0) nextState <= s18;
 			else if(scl == 0) nextState <= s17;
-			else nextState <= s1;
+			else nextState <= s17;
 		end
 		s18 : begin
 			out <= s18;
 			if(scl == 1) nextState <= s19;
-			else if(scl == 0 && sda == 1) nextState <= s18;
+			else if(sda == 1 && scl == 0) nextState <= s18;
 			else nextState <= s1;
 		end
 		s19 : begin
@@ -108,14 +108,14 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s21 : begin
 			out <= s21;
-			if(scl == 0 && sda == 0) nextState <= s22;
+			if(sda == 0 && scl == 0) nextState <= s22;
 			else if(scl == 1) nextState <= s21;
 			else nextState <= s1;
 		end
 		s22 : begin
 			out <= s22;
 			if(scl == 1) nextState <= s23;
-			else if(scl == 0 && sda == 0) nextState <= s22;
+			else if(sda == 0 && scl == 0) nextState <= s22;
 			else nextState <= s1;
 		end
 		s23 : begin
@@ -126,14 +126,14 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s31 : begin
 			out <= s31;
-			if(scl == 0 && sda == 1) nextState <= s32;
+			if(sda == 1 && scl == 0) nextState <= s32;
 			else if(scl == 0) nextState <= s31;
-			else nextState <= s1;
+			else nextState <= s31;
 		end
 		s32 : begin
 			out <= s32;
 			if(scl == 1) nextState <= s33;
-			else if(scl == 0 && sda == 1) nextState <= s32;
+			else if(sda == 1 && scl == 0) nextState <= s32;
 			else nextState <= s1;
 		end
 		s33 : begin
@@ -150,26 +150,26 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s35 : begin
 			out <= s35;
-			if(scl == 0 && sda == 0) nextState <= s36;
+			if(sda == 0 && scl == 0) nextState <= s36;
 			else if(scl == 1) nextState <= s35;
 			else nextState <= s1;
 		end
 		s36 : begin
 			out <= s36;
 			if(scl == 1) nextState <= s37;
-			else if(scl == 0 && sda == 0) nextState <= s36;
+			else if(sda == 0 && scl == 0) nextState <= s36;
 			else nextState <= s1;
 		end
 		s37 : begin
 			out <= s37;
-			if(scl == 0 && sda == 1) nextState <= s38;
+			if(sda == 1 && scl == 0) nextState <= s38;
 			else if(scl == 1) nextState <= s37;
 			else nextState <= s1;
 		end
 		s38 : begin
 			out <= s38;
 			if(scl == 1) nextState <= s39;
-			else if(scl == 0 && sda == 1) nextState <= s38;
+			else if(sda == 1 && scl == 0) nextState <= s38;
 			else nextState <= s1;
 		end
 		s39 : begin
@@ -198,26 +198,26 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s43 : begin
 			out <= s43;
-			if(scl == 0 && sda == 0) nextState <= s44;
+			if(sda == 0 && scl == 0) nextState <= s44;
 			else if(scl == 1) nextState <= s43;
 			else nextState <= s1;
 		end
 		s44 : begin
 			out <= s44;
 			if(scl == 1) nextState <= s45;
-			else if(scl == 0 && sda == 0) nextState <= s44;
+			else if(sda == 0 && scl == 0) nextState <= s44;
 			else nextState <= s1;
 		end
 		s45 : begin
 			out <= s45;
-			if(scl == 0 && sda == 1) nextState <= s46;
+			if(sda == 1 && scl == 0) nextState <= s46;
 			else if(scl == 1) nextState <= s45;
 			else nextState <= s1;
 		end
 		s46 : begin
 			out <= s46;
 			if(scl == 1) nextState <= s47;
-			else if(scl == 0 && sda == 1) nextState <= s46;
+			else if(sda == 1 && scl == 0) nextState <= s46;
 			else nextState <= s1;
 		end
 		s47 : begin
@@ -234,14 +234,14 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s49 : begin
 			out <= s49;
-			if(scl == 0 && sda == 0) nextState <= s50;
+			if(sda == 0 && scl == 0) nextState <= s50;
 			else if(scl == 1) nextState <= s49;
 			else nextState <= s1;
 		end
 		s50 : begin
 			out <= s50;
 			if(scl == 1) nextState <= s51;
-			else if(scl == 0 && sda == 0) nextState <= s50;
+			else if(sda == 0 && scl == 0) nextState <= s50;
 			else nextState <= s1;
 		end
 		s51 : begin
@@ -270,26 +270,26 @@ module dontcareFSM(reset, scl, sda, out);
 		end
 		s55 : begin
 			out <= s55;
-			if(scl == 0 && sda == 1) nextState <= s56;
+			if(sda == 1 && scl == 0) nextState <= s56;
 			else if(scl == 1) nextState <= s55;
 			else nextState <= s1;
 		end
 		s56 : begin
 			out <= s56;
 			if(scl == 1) nextState <= s57;
-			else if(scl == 0 && sda == 1) nextState <= s56;
+			else if(sda == 1 && scl == 0) nextState <= s56;
 			else nextState <= s1;
 		end
 		s57 : begin
 			out <= s57;
-			if(scl == 0 && sda == 0) nextState <= s58;
+			if(sda == 0 && scl == 0) nextState <= s58;
 			else if(scl == 1) nextState <= s57;
 			else nextState <= s1;
 		end
 		s58 : begin
 			out <= s58;
 			if(scl == 1) nextState <= s59;
-			else if(scl == 0 && sda == 0) nextState <= s58;
+			else if(sda == 0 && scl == 0) nextState <= s58;
 			else nextState <= s1;
 		end
 		s59 : begin

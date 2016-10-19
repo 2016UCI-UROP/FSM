@@ -61,6 +61,7 @@ class FSM:
                 val = line[0]
                 var = fsm.getInputVal(line[1])
                 if dontCare and var == 'sda':
+                    stat.setIsLoop()
                     dontCare = False
                 tempdic[var] = val
         return fsm
@@ -119,7 +120,7 @@ class FSM:
                 if self.li_states[i].b_isLoop == 0:
                     string += "\t\t\telse nextState <= s1;\n"
                 else:
-                    string += "\t\t\telse nextState <=" + curState.s_name + ";\n"
+                    string += "\t\t\telse nextState <= " + curState.s_name + ";\n"
                 string += '\t\t' + 'end\n'
                 output.write(string)
             #curState.printState()
