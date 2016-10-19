@@ -1,4 +1,3 @@
-
 """
    fsm_i2c.py
    written by  Yunho Kim, Charlotte
@@ -250,7 +249,7 @@ class Transition:
 
 
 if __name__ == "__main__":
-    rf = open("i2c_vcd.vcd", "r")
+    rf = open("dontcare.vcd", "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
@@ -265,5 +264,3 @@ if __name__ == "__main__":
 
     rf.close()
     wf.close()
-
-

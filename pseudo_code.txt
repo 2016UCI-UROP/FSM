@@ -1,30 +1,31 @@
 read VCD file
 while(VCD file is not empty)
-    if read Header and Node information of VCD file:
+     VCDline = readline(VCD file)
+    if VCDline has read Header or Node information:
         Signal List = {SDA, SCL}
-        Create_State(name of initial state)
+        src = Create_State(name of initial state)
     end if
-    if read Value Changes:
-    	Create_State(name of current state)
-    	Create_Condition_List(VCD file)
+    if VCDline has time information:
+        dest = Create_State(name of next state)
         Create_Transition(src_state, dest_state, Condition_List)
         Create_Back_Transition_Conditions(Condition_List, Signal_List)
         Add_Back_Transition(src_state, First_State, Back_Transition_Conditions)
+        src = dest
+        Condition_List = []
+    else if VCDline has unidentified section:
+        dest = src
+    else
+        Condition_List = Add_Condition_List(VCDline, Condition_List)
     end if
 end while
 print Verilog code for Finite State Machine
 
-define Create_Condition_List(VCD file)
-	Condition_List = []
-	line = Read_Line(VCD file)
-	while(NotNewTime(line)) 
-		cp = Condtion_Pair(line)
-		Insert(Condition_List, cp)
-		line = ReadLine(VCD)
-	end while
+define Add_Condition_List(VCD line, Condition_List)
+	cp = Condtion_Pair(line)
+	Insert(Condition_List, cp)
 return Condition_List
 
 define Create_Back_Transition_Conditions(Condition_List, Signal_List)
-	product_set = Cartesian_Product(Signal_List, {0, 1}) 
+	product_set = Cartesian_Product(Signal_List, {0, 1})
 	Back_Transition_Condtions = product_set - Condition_List
 return Back_Transition_Conditions
