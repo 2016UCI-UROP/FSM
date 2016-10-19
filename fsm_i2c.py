@@ -29,8 +29,7 @@ class FSM:
     def setFSM(self, lines):
         stat = 0
         idx = 1
-        dontCareVar = '0'
-        dontCare = 0
+        dontCare = False
         tempdic = {}
 
         for line in lines:
@@ -41,45 +40,29 @@ class FSM:
 
                 # read module name and original value names at .vcd and write on the FSM class
                 if words[0] == 'scope':
-                    fsm.setModuleName(words[2])
+                    fsm.setModuleName(words[2] + 'FSM')
                 elif words[0] == 'var' and words[1] == 'reg':
                     print(words[4], "is assigned to", words[3])
                     fsm.setInputValue(words[3], words[4])
                 continue
 
-            if line[0] == '#':
+            elif line[0] == '#':
                 if line[1] == '0':
                     continue
-                if idx > 1:
+                if idx > 1 and not dontCare:
                     stat.setTransition(tempdic, "s" + str(idx + 1))
-                    if dontCare < 2:
-                        fsm.setState(stat)
-                        if dontCare == 1:
-                            dontCare = 2
-
-
+                    fsm.setState(stat)
+                    dontCare = stat.hasDCval()
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
-
                 continue
-            if line == "...\n":
-                stat.setIsLoop()
-                continue
-
-            val = line[0]
-            var = fsm.getInputVal(line[1])
-            tempdic[var] = val
-            if val == 'x':
-                dontCare = 1
-                dontCareVar = var
-                print(val, var)
-            elif dontCareVar == var:
-                print(val, var, "aaaa")
-                dontCare = 0
-                dontCareVar = '0'
-                stat.setIsLoop()
-
+            else:
+                val = line[0]
+                var = fsm.getInputVal(line[1])
+                if dontCare and var == 'sda':
+                    dontCare = False
+                tempdic[var] = val
         return fsm
 
     # print the header part of verilog file
@@ -109,7 +92,6 @@ class FSM:
             if i == len(self.li_states) - 1:
                 string = '\t\t' + curState.s_name + ' : begin\n\t\tend\n'
                 output.write(string)
-
             else:
                 string = '\t\t' + curState.s_name + ' : begin\n'
                 string += "\t\t\tout <= " + curState.s_name + ';\n'
@@ -128,12 +110,12 @@ class FSM:
                 # if phrase
                 string += self.makeConditionString(i)
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
+                # else-if phrase
                 if i > 0:
                     string += '\t\t\telse if('
-                    # else-if phrase
                     string += self.makeConditionString(i - 1)
                     string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
-
+                #else phrase
                 if self.li_states[i].b_isLoop == 0:
                     string += "\t\t\telse nextState <= s1;\n"
                 else:
@@ -208,6 +190,13 @@ class State:
         self.li_transitions = []
         self.b_isLoop = 0
 
+    def hasDCval(self):
+        check = False
+        for t in self.li_transitions:
+            if t.hasDCval():
+                check = True
+        return check
+
     def setTransition(self, valDic, d):
         self.li_transitions.append(Transition(valDic, d))
 
@@ -246,6 +235,13 @@ class Transition:
             string += k + " changes to " + self.dic_tranValue[k] + " and "
         string = string[:-4]
         print(string + "\n\t\t--> Next State is " + self.s_dest)
+
+    def hasDCval(self):
+        check = False
+        if 'sda' in self.dic_tranValue and self.dic_tranValue['sda'] == 'x':
+            check = True
+        return check
+
 
 
 if __name__ == "__main__":

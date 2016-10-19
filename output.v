@@ -1,5 +1,5 @@
-module dontcare(reset, sda, scl, out);
-	input reset, sda, scl;
+module dontcareFSM(reset, scl, sda, out);
+	input reset, scl, sda;
 	output reg[64:0] out;
 	parameter s1 = "s1", s2 = "s2", s3 = "s3", s4 = "s4", s5 = "s5", s6 = "s6", s7 = "s7", s8 = "s8", s9 = "s9", s10 = "s10", s11 = "s11", s17 = "s17", s18 = "s18", s19 = "s19", s20 = "s20", s21 = "s21", s22 = "s22", s23 = "s23", s31 = "s31", s32 = "s32", s33 = "s33", s34 = "s34", s35 = "s35", s36 = "s36", s37 = "s37", s38 = "s38", s39 = "s39", s40 = "s40", s41 = "s41", s42 = "s42", s43 = "s43", s44 = "s44", s45 = "s45", s46 = "s46", s47 = "s47", s48 = "s48", s49 = "s49", s50 = "s50", s51 = "s51", s52 = "s52", s53 = "s53", s54 = "s54", s55 = "s55", s56 = "s56", s57 = "s57", s58 = "s58", s59 = "s59", s60 = "s60", s61 = "s61";
 	reg[64:0] state, nextState;
@@ -14,7 +14,7 @@ module dontcare(reset, sda, scl, out);
 		end
 	end
 
-	always @(sda, scl) begin
+	always @(scl, sda) begin
 		case(state)
 		s1 : begin
 			out <= s1;
@@ -26,7 +26,7 @@ module dontcare(reset, sda, scl, out);
 			out <= s2;
 			if(sda == 0) nextState <= s3;
 			else if(scl == 1) nextState <= s2;
-			else nextState <=s2;
+			else nextState <= s1;
 		end
 		s3 : begin
 			out <= s3;
@@ -86,7 +86,7 @@ module dontcare(reset, sda, scl, out);
 			out <= s17;
 			if(scl == 0 && sda == 1) nextState <= s18;
 			else if(scl == 0) nextState <= s17;
-			else nextState <=s17;
+			else nextState <= s1;
 		end
 		s18 : begin
 			out <= s18;
@@ -128,7 +128,7 @@ module dontcare(reset, sda, scl, out);
 			out <= s31;
 			if(scl == 0 && sda == 1) nextState <= s32;
 			else if(scl == 0) nextState <= s31;
-			else nextState <=s31;
+			else nextState <= s1;
 		end
 		s32 : begin
 			out <= s32;
