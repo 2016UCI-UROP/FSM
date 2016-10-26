@@ -21,7 +21,7 @@
         makeConditionString() : Create the condition statement for state changing
 """
 
-fileName = "unid.vcd"
+fileName = "dontcare.vcd"
 
 class FSM:
     s_moduleName = ""
@@ -56,8 +56,8 @@ class FSM:
                 if idx > 1 and (not dontCare or not unid):
                     stat.setTransition(tempdic, "s" + str(idx + 1))
                     fsm.setState(stat)
-                    dontCare = stat.hasDCval(dontCare)
-                    unid = stat.hasDCval(unid)
+                    dontCare = stat.hasDCval()
+                    unid = stat.hasDCval()
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
@@ -125,10 +125,7 @@ class FSM:
                     string += self.makeConditionString(i - 1)
                     string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
                 #else phrase
-                if self.li_states[i].b_isLoop == 0:
-                    string += "\t\t\telse nextState <= s1;\n"
-                else:
-                    string += "\t\t\telse nextState <= " + curState.s_name + ";\n"
+                string += "\t\t\telse nextState <= s1;\n"
                 string += '\t\t' + 'end\n'
                 output.write(string)
             #curState.printState()
@@ -138,11 +135,14 @@ class FSM:
     def makeConditionString(self, idx):
         string = ""
         for trans in self.li_states[idx].li_transitions:
-            for key in trans.dic_tranValue.keys():
-                if trans.dic_tranValue[key] != 'x':
-                    string += key + ' == ' + trans.dic_tranValue[key] + ' && '
-                else:
-                    string += key + ' === 1\'bx' + ' && '
+            if trans.hasDCval() or trans.hasUnidVal():
+                for key in trans.dic_tranValue.keys():
+                    if trans.dic_tranValue[key] == 'x':
+                        string += key + ' === 1\'bx' + ' && '
+            else:
+                for key in trans.dic_tranValue.keys():
+                    if trans.dic_tranValue[key] != 'x':
+                        string += key + ' == ' + trans.dic_tranValue[key] + ' && '
         return string[:-4]
 
 
@@ -201,17 +201,17 @@ class State:
         self.li_transitions = []
         self.b_isLoop = 0
 
-    def hasDCval(self, dc):
+    def hasDCval(self):
         check = False
         for t in self.li_transitions:
-            if t.hasDCval(dc):
+            if t.hasDCval():
                 check = True
         return check
 
-    def hasUnidVal(self, u):
+    def hasUnidVal(self):
         check = False
         for t in self.li_transitions:
-            if t.hasUnidVal(u):
+            if t.hasUnidVal():
                 check = True
         return check
 
@@ -254,13 +254,13 @@ class Transition:
         string = string[:-4]
         print(string + "\n\t\t--> Next State is " + self.s_dest)
 
-    def hasDCval(self, dc):
+    def hasDCval(self):
         check = False
         if 'sda' in self.dic_tranValue and self.dic_tranValue['sda'] == 'x':
             check = True
         return check
 
-    def hasUnidVal(self, u):
+    def hasUnidVal(self):
         check = False
         if 'scl' in self.dic_tranValue and self.dic_tranValue['scl'] == 'x':
             check = True

@@ -1,7 +1,7 @@
-module unidFSM(reset, sda, scl, out);
+module dontcareFSM(reset, sda, scl, out);
 	input reset, sda, scl;
 	output reg[64:0] out;
-	parameter s1 = "s1", s2 = "s2", s3 = "s3", s4 = "s4", s5 = "s5", s6 = "s6", s7 = "s7", s8 = "s8", s9 = "s9";
+	parameter s1 = "s1", s2 = "s2", s18 = "s18", s19 = "s19", s20 = "s20", s21 = "s21", s41 = "s41", s42 = "s42";
 	reg[64:0] state, nextState;
 	reg[128:0] label;
 
@@ -24,47 +24,41 @@ module unidFSM(reset, sda, scl, out);
 		end
 		s2 : begin
 			out <= s2;
-			if(scl == 0) nextState <= s3;
+			if(sda === 1'bx) nextState <= s18;
 			else if(sda == 0) nextState <= s2;
 			else nextState <= s1;
 		end
-		s3 : begin
-			out <= s3;
-			if(sda === 1'bx) nextState <= s4;
-			else if(scl == 0) nextState <= s3;
+		s18 : begin
+			out <= s18;
+			if(sda == 0 && scl == 0) nextState <= s19;
+			else if(sda === 1'bx) nextState <= s18;
 			else nextState <= s1;
 		end
-		s4 : begin
-			out <= s4;
-			if(scl === 1'bx) nextState <= s5;
-			else if(sda === 1'bx) nextState <= s4;
+		s19 : begin
+			out <= s19;
+			if(scl == 1) nextState <= s20;
+			else if(sda == 0 && scl == 0) nextState <= s19;
 			else nextState <= s1;
 		end
-		s5 : begin
-			out <= s5;
-			if(scl == 0) nextState <= s6;
-			else if(scl === 1'bx) nextState <= s5;
+		s20 : begin
+			out <= s20;
+			if(sda == 1 && scl == 0) nextState <= s21;
+			else if(scl == 1) nextState <= s20;
 			else nextState <= s1;
 		end
-		s6 : begin
-			out <= s6;
-			if(sda == 0) nextState <= s7;
-			else if(scl == 0) nextState <= s6;
+		s21 : begin
+			out <= s21;
+			if(sda === 1'bx) nextState <= s41;
+			else if(sda == 1 && scl == 0) nextState <= s21;
 			else nextState <= s1;
 		end
-		s7 : begin
-			out <= s7;
-			if(scl == 1) nextState <= s8;
-			else if(sda == 0) nextState <= s7;
+		s41 : begin
+			out <= s41;
+			if(sda == 1) nextState <= s42;
+			else if(sda === 1'bx) nextState <= s41;
 			else nextState <= s1;
 		end
-		s8 : begin
-			out <= s8;
-			if(sda == 1) nextState <= s9;
-			else if(scl == 1) nextState <= s8;
-			else nextState <= s1;
-		end
-		s9 : begin
+		s42 : begin
 		end
 		endcase
 	end
