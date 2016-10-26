@@ -1,31 +1,36 @@
 read VCD file
 while(VCD file is not empty)
-     VCDline = readline(VCD file)
-    if VCDline has read Header or Node information:
-        Signal List = {SDA, SCL}
-        src = Create_State(name of initial state)
+    line = readline(VCD file)
+    if line is Header and Node information of VCD file:
+        signal_list = {SDA, SCL}
+        src_state = create_state(state_name)
+        first_state = src_state
+        condition_list is empty list
     end if
-    if VCDline has time information:
-        dest = Create_State(name of next state)
-        Create_Transition(src_state, dest_state, Condition_List)
-        Create_Back_Transition_Conditions(Condition_List, Signal_List)
-        Add_Back_Transition(src_state, First_State, Back_Transition_Conditions)
-        src = dest
-        Condition_List = []
-    else if VCDline has unidentified section:
-        dest = src
-    else
-        Condition_List = Add_Condition_List(VCDline, Condition_List)
+    if line is Value Changes:
+        if line is time information:
+            dest_state = create_state(state_name)
+            create_trans(src_state, dest_state, conds_list)
+            back_trans_conds = create_back_trans_conds(conds_list, signal_list)
+            add_back_trans(src_state, first_state, back_trans_conds)
+            src_state = dest_state
+        end if
+        if line is unidentified section:
+            create_transition(dest_state, dest_state, back_trans_conds)
+        end if
+        if line is signal and value information:
+            condition_list = insert_condition_list(line, condition_list)
+        end if
     end if
 end while
 print Verilog code for Finite State Machine
 
-define Add_Condition_List(VCD line, Condition_List)
-	cp = Condtion_Pair(line)
-	Insert(Condition_List, cp)
-return Condition_List
+define insert_condition_list(line, condition_list)
+    cp = condtion_pair(line)
+    insert(condition_list, cp)
+return condition_list
 
-define Create_Back_Transition_Conditions(Condition_List, Signal_List)
-	product_set = Cartesian_Product(Signal_List, {0, 1})
-	Back_Transition_Condtions = product_set - Condition_List
-return Back_Transition_Conditions
+define create_back_trans_conds(conds_list, signal_list)
+	product_set = Cartesian_product(signal_list, {0, 1}) 
+	back_trans_conds = product_set - conds_list
+return back_trans_conds

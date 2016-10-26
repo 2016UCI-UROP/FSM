@@ -20,6 +20,9 @@
         printTransitions() : Print the state changing conditions & transition part of verilog file
         makeConditionString() : Create the condition statement for state changing
 """
+
+fileName = "unid.vcd"
+
 class FSM:
     s_moduleName = ""
     dic_inputVal = {}
@@ -30,6 +33,7 @@ class FSM:
         stat = 0
         idx = 1
         dontCare = False
+        unid = False
         tempdic = {}
 
         for line in lines:
@@ -49,20 +53,24 @@ class FSM:
             elif line[0] == '#':
                 if line[1] == '0':
                     continue
-                if idx > 1 and not dontCare:
+                if idx > 1 and (not dontCare or not unid):
                     stat.setTransition(tempdic, "s" + str(idx + 1))
                     fsm.setState(stat)
-                    dontCare = stat.hasDCval()
+                    dontCare = stat.hasDCval(dontCare)
+                    unid = stat.hasDCval(unid)
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
                 continue
             else:
+                print(line)
                 val = line[0]
                 var = fsm.getInputVal(line[1])
                 if dontCare and var == 'sda':
                     stat.setIsLoop()
                     dontCare = False
+                elif unid and var == 'scl' and val == 'x':
+                    unid = False
                 tempdic[var] = val
         return fsm
 
@@ -193,10 +201,17 @@ class State:
         self.li_transitions = []
         self.b_isLoop = 0
 
-    def hasDCval(self):
+    def hasDCval(self, dc):
         check = False
         for t in self.li_transitions:
-            if t.hasDCval():
+            if t.hasDCval(dc):
+                check = True
+        return check
+
+    def hasUnidVal(self, u):
+        check = False
+        for t in self.li_transitions:
+            if t.hasUnidVal(u):
                 check = True
         return check
 
@@ -239,16 +254,23 @@ class Transition:
         string = string[:-4]
         print(string + "\n\t\t--> Next State is " + self.s_dest)
 
-    def hasDCval(self):
+    def hasDCval(self, dc):
         check = False
         if 'sda' in self.dic_tranValue and self.dic_tranValue['sda'] == 'x':
             check = True
         return check
 
+    def hasUnidVal(self, u):
+        check = False
+        if 'scl' in self.dic_tranValue and self.dic_tranValue['scl'] == 'x':
+            check = True
+        return check
+
+
 
 
 if __name__ == "__main__":
-    rf = open("unid.vcd", "r")
+    rf = open(fileName, "r")
     wf = open("output.v", "w")
     fsm = FSM()
 
