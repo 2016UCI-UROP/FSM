@@ -149,7 +149,9 @@ class FSM:
     # make the input value string (e.g. i1, i2, i3)
     def makeInputVarString(self):
         s = ""
-        for v in self.dic_inputVal.values():
+        tmpList = list(self.dic_inputVal.values())
+        tmpList.sort(reverse=True)
+        for v in tmpList:
             s += (v + ", ")
         s = s[:-2]
         return s

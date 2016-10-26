@@ -1,5 +1,5 @@
-module unidFSM(reset, scl, sda, out);
-	input reset, scl, sda;
+module unidFSM(reset, sda, scl, out);
+	input reset, sda, scl;
 	output reg[64:0] out;
 	parameter s1 = "s1", s2 = "s2", s3 = "s3", s4 = "s4", s5 = "s5", s6 = "s6", s7 = "s7", s8 = "s8", s9 = "s9";
 	reg[64:0] state, nextState;
@@ -14,7 +14,7 @@ module unidFSM(reset, scl, sda, out);
 		end
 	end
 
-	always @(scl, sda) begin
+	always @(sda, scl) begin
 		case(state)
 		s1 : begin
 			out <= s1;
