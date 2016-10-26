@@ -21,7 +21,7 @@
         makeConditionString() : Create the condition statement for state changing
 """
 
-fileName = "dontcare.vcd"
+fileName = "unid.vcd"
 
 class FSM:
     s_moduleName = ""
@@ -271,7 +271,7 @@ class Transition:
 
 if __name__ == "__main__":
     rf = open(fileName, "r")
-    wf = open("output.v", "w")
+    wf = open(fileName[:-4]+"-output.v", "w")
     fsm = FSM()
 
     lines = rf.readlines()
