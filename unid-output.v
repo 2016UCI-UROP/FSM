@@ -29,12 +29,12 @@ module unidFSM(reset, sda, scl, out);
 		end
 		s3 : begin
 			out <= s3;
-			if(1) nextState <= s4;
+			if(sda == 1 || sda == 0 || sda === 1'bx) nextState <= s4;
 			else nextState <= s1;
 		end
 		s4 : begin
 			out <= s4;
-			if(1) nextState <= s5;
+			if(scl == 1 || scl == 0 || scl === 1'bx) nextState <= s5;
 			else nextState <= s1;
 		end
 		s5 : begin

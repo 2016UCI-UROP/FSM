@@ -126,7 +126,11 @@ class FSM:
                 # else-if phrase
                 #if i > 0:
                 #    string += '\t\t\telse if('
-                #    string += self.makeConditionString(i - 1)
+                #    tmp_str = self.dontcare2true(self.makeConditionString(i - 1))
+                #    if tmp_str == "":
+                #        string += '1' # in Verilog, true is 1
+                #    else:
+                #        string += tmp_str
                 #    string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
                 #else phrase
                 string += "\t\t\telse nextState <= s1;\n"
@@ -144,9 +148,9 @@ class FSM:
         if dc_bth in mcs:
             tp_str = mcs.replace(dc_bth, "")
         elif dc_sda in mcs:
-            tp_str = mcs.replace(dc_sda, "")
+            tp_str = mcs.replace(dc_sda, "sda == 1 || sda == 0 || sda === 1'bx")
         elif dc_scl in mcs:
-            tp_str = mcs.replace(dc_scl, "")
+            tp_str = mcs.replace(dc_scl, "scl == 1 || scl == 0 || scl === 1'bx")
         else:
             tp_str = mcs
         return tp_str

@@ -24,12 +24,12 @@ module dontcareFSM(reset, sda, scl, out);
 		end
 		s2 : begin
 			out <= s2;
-			if(1) nextState <= s18;
+			if(sda == 1 || sda == 0 || sda === 1'bx) nextState <= s18;
 			else nextState <= s1;
 		end
 		s18 : begin
 			out <= s18;
-			if(scl == 0 && sda == 0) nextState <= s19;
+			if(sda == 0 && scl == 0) nextState <= s19;
 			else nextState <= s1;
 		end
 		s19 : begin
@@ -39,12 +39,12 @@ module dontcareFSM(reset, sda, scl, out);
 		end
 		s20 : begin
 			out <= s20;
-			if(scl == 0 && sda == 1) nextState <= s21;
+			if(sda == 1 && scl == 0) nextState <= s21;
 			else nextState <= s1;
 		end
 		s21 : begin
 			out <= s21;
-			if(1) nextState <= s41;
+			if(sda == 1 || sda == 0 || sda === 1'bx) nextState <= s41;
 			else nextState <= s1;
 		end
 		s41 : begin
