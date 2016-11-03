@@ -21,7 +21,7 @@
         makeConditionString() : Create the condition statement for state changing
 """
 
-fileName = "dontcare.vcd"
+fileName = "unid.vcd"
 
 class FSM:
     s_moduleName = ""
@@ -53,7 +53,8 @@ class FSM:
             elif line[0] == '#':
                 if line[1] == '0':
                     continue
-                if idx > 1 and (not dontCare or not unid):
+                if idx > 1:
+                    # and (not dontCare or not unid):
                     stat.setTransition(tempdic, "s" + str(idx + 1))
                     fsm.setState(stat)
                     dontCare = stat.hasDCval()
@@ -66,11 +67,13 @@ class FSM:
                 print(line)
                 val = line[0]
                 var = fsm.getInputVal(line[1])
+                """
                 if dontCare and var == 'sda':
                     stat.setIsLoop()
                     dontCare = False
                 elif unid and var == 'scl' and val == 'x':
                     unid = False
+                """
                 tempdic[var] = val
         return fsm
 
