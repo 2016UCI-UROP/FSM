@@ -18,10 +18,11 @@
         printHeader() : Print the header part of verilog file
         printInitialize() : Print the initialize part of verilog file
         printTransitions() : Print the state changing conditions & transition part of verilog file
+        dontcare2true() : translate 1b'x value to real "don't care" value
         makeConditionString() : Create the condition statement for state changing
 """
 
-fileName = "unid.vcd"
+fileName = "loop.vcd"
 
 class FSM:
     s_moduleName = ""
@@ -32,8 +33,6 @@ class FSM:
     def setFSM(self, lines):
         stat = 0
         idx = 1
-        dontCare = False
-        unid = False
         tempdic = {}
 
         for line in lines:
@@ -67,13 +66,6 @@ class FSM:
                 print(line)
                 val = line[0]
                 var = fsm.getInputVal(line[1])
-                """
-                if dontCare and var == 'sda':
-                    stat.setIsLoop()
-                    dontCare = False
-                elif unid and var == 'scl' and val == 'x':
-                    unid = False
-                """
                 tempdic[var] = val
         return fsm
 
