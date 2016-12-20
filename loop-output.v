@@ -24,7 +24,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s2 : begin
 			out <= s2;
-			if(sda == 0 && scl == 0) nextState <= s3;
+			if(scl == 0 && sda == 0) nextState <= s3;
 			else nextState <= s1;
 		end
 		s3 : begin
@@ -34,7 +34,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s4 : begin
 			out <= s4;
-			if(sda == 1 && scl == 0) nextState <= s5;
+			if(scl == 0 && sda == 1) nextState <= s5;
 			else nextState <= s1;
 		end
 		s5 : begin
@@ -54,7 +54,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s8 : begin
 			out <= s8;
-			if(sda == 0 && scl == 0) nextState <= s9;
+			if(scl == 0 && sda == 0) nextState <= s9;
 			else nextState <= s1;
 		end
 		s9 : begin
@@ -64,7 +64,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s10 : begin
 			out <= s10;
-			if(sda == 1 && scl == 0) nextState <= s11;
+			if(scl == 0 && sda == 1) nextState <= s11;
 			else nextState <= s1;
 		end
 		s11 : begin
@@ -94,7 +94,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s16 : begin
 			out <= s16;
-			if(sda == 0 && scl == 0) nextState <= s17;
+			if(scl == 0 && sda == 0) nextState <= s17;
 			else nextState <= s1;
 		end
 		s17 : begin
@@ -114,7 +114,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s20 : begin
 			out <= s20;
-			if(sda == 1 && scl == 0) nextState <= s21;
+			if(scl == 0 && sda == 1) nextState <= s21;
 			else nextState <= s1;
 		end
 		s21 : begin
@@ -124,7 +124,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s22 : begin
 			out <= s22;
-			if(sda == 0 && scl == 0) nextState <= s23;
+			if(scl == 0 && sda == 0) nextState <= s23;
 			else nextState <= s1;
 		end
 		s23 : begin
@@ -144,7 +144,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s26 : begin
 			out <= s26;
-			if(sda == 1 && scl == 0) nextState <= s27;
+			if(scl == 0 && sda == 1) nextState <= s27;
 			else nextState <= s1;
 		end
 		s27 : begin
@@ -164,7 +164,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s30 : begin
 			out <= s30;
-			if(sda == 0 && scl == 0) nextState <= s31;
+			if(scl == 0 && sda == 0) nextState <= s31;
 			else nextState <= s1;
 		end
 		s31 : begin
@@ -174,7 +174,7 @@ module loopFSM(reset, sda, scl, out);
 		end
 		s32 : begin
 			out <= s32;
-			if(sda == 1 && scl == 0) nextState <= s33;
+			if(scl == 0 && sda == 1) nextState <= s33;
 			else nextState <= s1;
 		end
 		s33 : begin

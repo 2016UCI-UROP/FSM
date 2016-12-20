@@ -22,7 +22,8 @@
         makeConditionString() : Create the condition statement for state changing
 """
 
-fileName = "loop.vcd"
+#Insert a file name here
+fileName = "unid.vcd"
 
 class FSM:
     s_moduleName = ""
@@ -56,8 +57,6 @@ class FSM:
                     # and (not dontCare or not unid):
                     stat.setTransition(tempdic, "s" + str(idx + 1))
                     fsm.setState(stat)
-                    dontCare = stat.hasDCval()
-                    unid = stat.hasDCval()
                 tempdic = {}
                 stat = State("s" + str(idx))
                 idx += 1
@@ -118,15 +117,6 @@ class FSM:
                 else:
                     string += tmp_str
                 string += ') nextState <= ' + self.li_states[i + 1].s_name + ';\n'
-                # else-if phrase
-                #if i > 0:
-                #    string += '\t\t\telse if('
-                #    tmp_str = self.dontcare2true(self.makeConditionString(i - 1))
-                #    if tmp_str == "":
-                #        string += '1' # in Verilog, true is 1
-                #    else:
-                #        string += tmp_str
-                #    string += ') nextState <= ' + self.li_states[i].s_name + ';\n'
                 #else phrase
                 string += "\t\t\telse nextState <= s1;\n"
                 string += '\t\t' + 'end\n'
